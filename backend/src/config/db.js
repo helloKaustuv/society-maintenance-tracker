@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
@@ -171,6 +172,39 @@ const query = async (text, params = []) => {
   });
 };
 
+const ensureDemoUsers = async () => {
+  const demoUsers = [
+    {
+      name: 'Society Administrator',
+      email: 'admin@example.com',
+      password: 'Admin@123',
+      role: 'admin',
+      phone: '+1-555-0100',
+      flatNumber: 'Management Office A-101'
+    },
+    {
+      name: 'John Doe',
+      email: 'john@example.com',
+      password: 'Resident@123',
+      role: 'resident',
+      phone: '+1-555-0101',
+      flatNumber: 'Tower B - Flat 402'
+    }
+  ];
+
+  for (const user of demoUsers) {
+    const passwordHash = await bcrypt.hash(user.password, 10);
+    await query(
+      `INSERT INTO users (name, email, password_hash, role, phone, flat_number)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (email) DO NOTHING`,
+      [user.name, user.email, passwordHash, user.role, user.phone, user.flatNumber]
+    );
+  }
+
+  console.log('[Database] Demo accounts are available.');
+};
+
 /**
  * Initializes database tables
  */
@@ -181,6 +215,7 @@ const initDb = async () => {
       const schemaSql = fs.readFileSync(schemaPath, 'utf8');
       await pool.query(schemaSql);
       console.log('[Database] PostgreSQL schema initialized successfully.');
+      await ensureDemoUsers();
     }
   } else if (sqliteDb) {
     // Run SQLite compatible schema
@@ -246,7 +281,7 @@ const initDb = async () => {
           return reject(err);
         }
         console.log('[Database] Local database schema initialized successfully.');
-        resolve();
+        ensureDemoUsers().then(resolve).catch(reject);
       });
     });
   }
