@@ -4,7 +4,9 @@ const fs = require('fs');
 const { cloudinary, isCloudinaryConfigured } = require('../config/cloudinary');
 
 // Ensure local uploads directory exists for fallback
-const uploadDir = path.join(__dirname, '../../uploads');
+const uploadDir = process.env.VERCEL
+  ? path.join('/tmp', 'society-maintenance-uploads')
+  : path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }

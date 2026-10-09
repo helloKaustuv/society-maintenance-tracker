@@ -24,8 +24,24 @@ const {
   deleteNoticeAdmin
 } = require('./controllers/noticeController');
 const { getAdminDashboardStats } = require('./controllers/dashboardController');
+const { initDb } = require('./config/db');
 
 const app = express();
+
+// Vercel runs this app as a serverless function, so initialize the persistent
+// schema lazily on the first request handled by each warm instance.
+if (process.env.VERCEL) {
+  let databaseReady;
+  app.use((req, res, next) => {
+    if (!databaseReady) {
+      databaseReady = initDb().catch((error) => {
+        databaseReady = null;
+        throw error;
+      });
+    }
+    databaseReady.then(() => next()).catch(next);
+  });
+}
 
 // Security & Parsing Middlewares
 app.use(cors({
@@ -37,8 +53,16 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve local static uploaded files
-const uploadDir = path.join(__dirname, '../uploads');
+const uploadDir = process.env.VERCEL
+  ? path.join('/tmp', 'society-maintenance-uploads')
+  : path.join(__dirname, '../uploads');
 app.use('/uploads', express.static(uploadDir));
+app.get('/uploads/:filename', (req, res, next) => {
+  const filename = path.basename(req.params.filename);
+  res.sendFile(path.join(uploadDir, filename), (error) => {
+    if (error) next(error);
+  });
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
