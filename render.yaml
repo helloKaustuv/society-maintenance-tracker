@@ -11,6 +11,10 @@ services:
     runtime: node
     plan: 0.5c-512mb
     region: singapore
+    disk:
+      name: society-maintenance-uploads
+      mountPath: /opt/render/project/src/backend/uploads
+      sizeGB: 1
     buildCommand: npm ci --prefix backend && npm ci --prefix frontend && npm run build --prefix frontend
     startCommand: npm start --prefix backend
     healthCheckPath: /api/health

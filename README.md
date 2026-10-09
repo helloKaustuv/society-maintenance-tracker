@@ -306,7 +306,7 @@ npm test
 
 ### Full-Stack Render Deployment (24/7)
 
-This repository includes a Render Blueprint (`render.yaml`) that deploys the Vite frontend and Express API together, with managed PostgreSQL in Singapore. The web service serves the built frontend and API from the same origin. The Blueprint uses an always-on paid web plan and a paid PostgreSQL plan; Render's current baseline pricing is about **$13/month** before any extra bandwidth or storage.
+This repository includes a Render Blueprint (`render.yaml`) that deploys the Vite frontend and Express API together, with managed PostgreSQL and persistent photo uploads in Singapore. The web service serves the built frontend and API from the same origin. The Blueprint uses an always-on paid web plan, paid PostgreSQL, and a 1 GB persistent disk; Render's current baseline pricing is about **$13.25/month** before any extra bandwidth or storage.
 
 1. In the Render Dashboard, create a new **Blueprint** and select this GitHub repository.
 2. Review the web service and PostgreSQL resources and their estimated charges.
