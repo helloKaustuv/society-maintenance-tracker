@@ -75,6 +75,21 @@ adminRouter.get('/dashboard', getAdminDashboardStats);
 
 app.use('/api/admin', adminRouter);
 
+// In production, serve the Vite build from the same origin as the API.
+// This keeps browser API requests same-origin and gives React Router deep links a fallback.
+const frontendDist = path.join(__dirname, '../../frontend/dist');
+if (require('fs').existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/') || req.path === '/api' || req.path.startsWith('/uploads/')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDist, 'index.html'), (err) => {
+      if (err) next(err);
+    });
+  });
+}
+
 // 404 & Centralized Error Handlers
 app.use(notFoundHandler);
 app.use(errorHandler);

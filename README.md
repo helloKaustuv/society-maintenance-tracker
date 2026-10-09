@@ -304,6 +304,15 @@ npm test
 
 ## 10. Deployment Guide
 
+### Full-Stack Render Deployment (24/7)
+
+This repository includes a Render Blueprint (`render.yaml`) that deploys the Vite frontend and Express API together, with managed PostgreSQL in Singapore. The web service serves the built frontend and API from the same origin. The Blueprint uses an always-on paid web plan and a paid PostgreSQL plan; Render's current baseline pricing is about **$13/month** before any extra bandwidth or storage.
+
+1. In the Render Dashboard, create a new **Blueprint** and select this GitHub repository.
+2. Review the web service and PostgreSQL resources and their estimated charges.
+3. Create the Blueprint to build and deploy. Render generates `JWT_SECRET` and supplies the database connection automatically.
+4. Use the web service's `onrender.com` URL as the public app link.
+
 ### Database (Neon / Supabase / Render PostgreSQL)
 1. Create a PostgreSQL database instance on [Neon](https://neon.tech), [Supabase](https://supabase.com), or [Render](https://render.com).
 2. Copy the Connection URI.

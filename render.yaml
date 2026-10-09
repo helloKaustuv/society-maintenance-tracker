@@ -1,0 +1,28 @@
+databases:
+  - name: society-maintenance-db
+    plan: basic-256mb
+    region: singapore
+    databaseName: society_maintenance
+    user: society_maintenance
+
+services:
+  - type: web
+    name: society-maintenance-tracker
+    runtime: node
+    plan: 0.5c-512mb
+    region: singapore
+    buildCommand: npm ci --prefix backend && npm ci --prefix frontend && npm run build --prefix frontend
+    startCommand: npm start --prefix backend
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: society-maintenance-db
+          property: connectionString
+      - key: VITE_API_BASE_URL
+        value: /api
