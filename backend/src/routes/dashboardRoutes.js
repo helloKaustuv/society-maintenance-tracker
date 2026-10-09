@@ -7,4 +7,6 @@ const router = express.Router();
 // Admin Dashboard stats endpoint
 router.get('/', authenticateToken, requireAdmin, getAdminDashboardStats);
 
+router.default = router;
+router.router = router;
 module.exports = router;

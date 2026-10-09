@@ -24,4 +24,6 @@ router.post('/', authenticateToken, requireAdmin, validate(noticeValidation), cr
 router.patch('/:id', authenticateToken, requireAdmin, updateNoticeAdmin);
 router.delete('/:id', authenticateToken, requireAdmin, deleteNoticeAdmin);
 
+router.default = router;
+router.router = router;
 module.exports = router;

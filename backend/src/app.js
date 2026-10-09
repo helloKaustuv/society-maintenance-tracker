@@ -5,10 +5,20 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Vercel's serverless bundler can wrap CommonJS modules in a default export.
-// Normalize both the native CommonJS and wrapped forms before mounting routers.
+// Vercel's serverless bundler may expose CommonJS router modules through a
+// namespace object. Resolve the underlying Express router in either form.
 const loadRouter = (loadedModule) => {
-  return typeof loadedModule === 'function' ? loadedModule : loadedModule.default;
+  let candidate = loadedModule;
+
+  for (let depth = 0; depth < 4 && candidate && typeof candidate !== 'function'; depth += 1) {
+    candidate = candidate.default || candidate.router || candidate.exports;
+  }
+
+  if (typeof candidate !== 'function') {
+    throw new TypeError('Route module did not export an Express router');
+  }
+
+  return candidate;
 };
 
 const authRoutes = loadRouter(require('./routes/authRoutes'));

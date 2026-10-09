@@ -26,4 +26,6 @@ router.post('/login', validate(loginValidation), login);
 router.get('/me', authenticateToken, getMe);
 router.patch('/profile', authenticateToken, updateProfile);
 
+router.default = router;
+router.router = router;
 module.exports = router;

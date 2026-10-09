@@ -42,4 +42,6 @@ router.patch('/admin/:id/status', authenticateToken, requireAdmin, updateComplai
 router.patch('/admin/:id/priority', authenticateToken, requireAdmin, updateComplaintPriorityAdmin);
 router.get('/admin/:id/history', authenticateToken, requireAdmin, getComplaintHistoryAdmin);
 
+router.default = router;
+router.router = router;
 module.exports = router;
