@@ -7,15 +7,14 @@ dotenv.config();
 
 // Vercel's serverless bundler can wrap CommonJS modules in a default export.
 // Normalize both the native CommonJS and wrapped forms before mounting routers.
-const loadRouter = (modulePath) => {
-  const loadedModule = require(modulePath);
+const loadRouter = (loadedModule) => {
   return typeof loadedModule === 'function' ? loadedModule : loadedModule.default;
 };
 
-const authRoutes = loadRouter('./routes/authRoutes');
-const complaintRoutes = loadRouter('./routes/complaintRoutes');
-const noticeRoutes = loadRouter('./routes/noticeRoutes');
-const dashboardRoutes = loadRouter('./routes/dashboardRoutes');
+const authRoutes = loadRouter(require('./routes/authRoutes'));
+const complaintRoutes = loadRouter(require('./routes/complaintRoutes'));
+const noticeRoutes = loadRouter(require('./routes/noticeRoutes'));
+const dashboardRoutes = loadRouter(require('./routes/dashboardRoutes'));
 
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const { authenticateToken, requireAdmin } = require('./middleware/auth');
