@@ -1,0 +1,21 @@
+# Dependencies and generated output
+**/node_modules/
+frontend/dist/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Local database and resident uploads
+backend/database/*.db
+backend/database/*.sqlite
+backend/database/*.sqlite3
+backend/uploads/
+
+# Local screenshots and deployment metadata
+Snapshots/
+.vercel/
